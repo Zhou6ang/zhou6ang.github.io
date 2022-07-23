@@ -1,5 +1,5 @@
 
-# The simple exmaple of Kong
+# Kong API Gateway
 ## Introduction
 [Kong Gateway](https://docs.konghq.com/gateway/latest/) is a lightweight, fast, and flexible cloud-native API gateway. An API gateway is a reverse proxy that lets you manage, configure, and route requests to your APIs.
 
@@ -20,66 +20,73 @@
    docker network create kong-net
    ```
   -  create Postgres DB
-  ```
-  docker run -d --name kong-database \
-  --network=kong-net \
-  -p 5432:5432 \
-  -e "POSTGRES_USER=kong" \
-  -e "POSTGRES_DB=demo" \
-  -e "POSTGRES_PASSWORD=kongpass" \
-  postgres:9.6
-  ```
+  
+    ```
+    docker run -d --name kong-database \
+    --network=kong-net \
+    -p 5432:5432 \
+    -e "POSTGRES_USER=kong" \
+    -e "POSTGRES_DB=demo" \
+    -e "POSTGRES_PASSWORD=kongpass" \
+    postgres:9.6
+    ```
   - initiate Kong SQL
+    
   ```
-  docker run --rm --network=kong-net \
-  -e "KONG_DATABASE=postgres" \
-  -e "KONG_PG_HOST=kong-database" \
-  -e "KONG_PG_PASSWORD=kongpass" \
-  -e "KONG_PG_DATABASE=demo" \
-  -e "KONG_PASSWORD=test" \
-  kong/kong-gateway:2.8.1.2-alpine kong migrations bootstrap
-   ```
+    docker run --rm --network=kong-net \
+    -e "KONG_DATABASE=postgres" \
+    -e "KONG_PG_HOST=kong-database" \
+    -e "KONG_PG_PASSWORD=kongpass" \
+    -e "KONG_PG_DATABASE=demo" \
+    -e "KONG_PASSWORD=test" \
+    kong/kong-gateway:2.8.1.2-alpine kong migrations bootstrap
+  ```
 
-   - create Kong gateway
+  - create Kong gateway
    ```
    docker run -d --name kong-gateway \
-  --network=kong-net \
-  -e "KONG_DATABASE=postgres" \
-  -e "KONG_PG_HOST=kong-database" \
-  -e "KONG_PG_USER=kong" \
-  -e "KONG_PG_PASSWORD=kongpass" \
-  -e "KONG_PG_DATABASE=demo" \
-  -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
-  -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
-  -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
-  -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
-  -e "KONG_ADMIN_LISTEN=0.0.0.0:8001" \
-  -e "KONG_ADMIN_GUI_URL=http://localhost:8002" \
-  -e KONG_LICENSE_DATA \
-  -p 8000:8000 \
-  -p 8443:8443 \
-  -p 8001:8001 \
-  -p 8444:8444 \
-  -p 8002:8002 \
-  -p 8445:8445 \
-  -p 8003:8003 \
-  -p 8004:8004 \
-  kong/kong-gateway:2.8.1.2-alpine
-  ```
+    --network=kong-net \
+    -e "KONG_DATABASE=postgres" \
+    -e "KONG_PG_HOST=kong-database" \
+    -e "KONG_PG_USER=kong" \
+    -e "KONG_PG_PASSWORD=kongpass" \
+    -e "KONG_PG_DATABASE=demo" \
+    -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+    -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+    -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+    -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+    -e "KONG_ADMIN_LISTEN=0.0.0.0:8001" \
+    -e "KONG_ADMIN_GUI_URL=http://localhost:8002" \
+    -e KONG_LICENSE_DATA \
+    -p 8000:8000 \
+    -p 8443:8443 \
+    -p 8001:8001 \
+    -p 8444:8444 \
+    -p 8002:8002 \
+    -p 8445:8445 \
+    -p 8003:8003 \
+    -p 8004:8004 \
+    kong/kong-gateway:2.8.1.2-alpine
+   ```
 
-### Kong's ports
-- 8000: listens for incoming HTTP traffic from your clients, and forwards it to your upstream services.
-- 8001: Admin API listens for calls from the command line over HTTP.
-- 8443: listens for incoming HTTPS traffic. This port has a similar behavior to 8000, except that it expects HTTPS traffic only. This port can be disabled via the configuration file.
-- 8444: Admin API listens for HTTPS traffic.
+## Kong's ports
+- `8000`: listens for incoming HTTP traffic from your clients, and forwards it to your upstream services.
+- `8001`: Admin API listens for calls from the command line over HTTP.
+- `8443`: listens for incoming HTTPS traffic. This port has a similar behavior to 8000, except that it expects HTTPS traffic only. This port can be disabled via the configuration file.
+- `8444`: Admin API listens for HTTPS traffic.
 
-### Kong's commands
+## Kong's commands
 - kong stop: stop kong gateway
 - kong reload: reload configuration of kong gateway
 - kong start: start kong gateway
+- kong check: Check the validity of a given Kong configuration file
+- kong config: Use declarative configuration files with Kong.
+- kong health: Check if the necessary services are running for this node.
+- kong restart: This command is equivalent to doing both 'kong stop' and
+'kong start'.
 
-
-### **Using Kong Manager**(GUI)
+## Tutorial
+### **Simple API Gateway**
 
 - Setup 2 backend services
   - let's using http://mockbin.org/
@@ -187,7 +194,7 @@ let's take `Basic Authentication` as an example.
     - The second request would route to `backend-service-2`
       ![xxx](./load_balancing_to_service_2.PNG)
 
-### **Using Admin API**(port:8001)
+## **Using Admin API**
 - Configure a **Service**
   ```
   curl -i -X POST \
