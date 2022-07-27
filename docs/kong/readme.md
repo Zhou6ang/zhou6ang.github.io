@@ -87,7 +87,8 @@
 
 ## Tutorial
 ### **Simple API Gateway**
-
+The Kong can only use `Route` and `Service` to route traffic to backend service as below diagram. Let's take an simple example.
+![xxx](./simple-gateway.png)
 - Setup 2 backend services
   - let's using http://mockbin.org/
   - create **service-1**
@@ -157,10 +158,12 @@ let's take `Basic Authentication` as an example.
 
  - Create backend services: `backend-service-1` and `backend-service-2`, here we are taking simple `echo-server` as backend service which output request simply.
     ```
-    root@EPCNCHEW0116:~# docker run -d --name backend-service-1 -p 6001:8080 jmalloc/echo-server 314c0e734debc22d89302c29ff0d83de9746c4858bce8f380d6c4d87a9e08d8e
+    root@EPCNCHEW0116:~# docker run -d --name backend-service-1 -p 6001:8080 jmalloc/echo-server 
+    314c0e734debc22d89302c29ff0d83de9746c4858bce8f380d6c4d87a9e08d8e
     root@EPCNCHEW0116:~#
 
-    root@EPCNCHEW0116:~# docker run -d --name backend-service-2 -p 6002:8080 jmalloc/echo-server 304c0e734debe22d89302c29ff0d83de9746c4858bce8f380d6c4d87a9e08d8e
+    root@EPCNCHEW0116:~# docker run -d --name backend-service-2 -p 6002:8080 jmalloc/echo-server 
+    304c0e734debe22d89302c29ff0d83de9746c4858bce8f380d6c4d87a9e08d8e
     root@EPCNCHEW0116:~#
 
     ```
